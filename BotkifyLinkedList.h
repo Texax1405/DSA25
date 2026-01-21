@@ -39,12 +39,12 @@ public:
 
     string toString() const;
 
-    // Additional function
+    // HELPER FUNCTION
     void checkIndex(int index);
     Node *getPreviousNodeOf(int index);
 };
 
-/* TODO */
+/* IMPLEMENTATION */
 template <class T> 
 BotkifyLinkedList<T>::BotkifyLinkedList(){
     this->head = new Node();
@@ -55,14 +55,15 @@ BotkifyLinkedList<T>::BotkifyLinkedList(){
 template <class T>
 BotkifyLinkedList<T>::~BotkifyLinkedList(){
     this->clear();
+    delete this->head
 }
 
 template <class T>
 void BotkifyLinkedList<T>::add(T e){
     
     Node *newNode = new Node(e);
-    tail->next = newNode;
-    tail = newNode;
+    this->tail->next = newNode;
+    this->tail = newNode;
 
     this->count++;
 }
@@ -70,52 +71,126 @@ void BotkifyLinkedList<T>::add(T e){
 template <class T>
 void BotkifyLinkedList<T>::add(int index, T e){
     this->checkIndex(index);
+
+    if (index == this->count) {
+        this->add(e);
+        return;
+    }
+
     Node *prevNode = this->getPreviousNodeOf(index);
     Node *newNode = new Node(e, prevNode->next);
 
-    if (getNode->next == nullptr){
-        this->add(e);
-    }
-
-    getNode->next = newNode;
+    prevNode->next = newNode;
     this->count++;
 }
 
 template <class T>
 T BotkifyLinkedList<T>::removeAt(int index){
     this->checkIndex(index);
-    Node *currNode = this->get(index);
-    
+    Node *prevNode = this->getPreviousNodeOf(index);
+    Node *removeNode = prevNode->next;
+    T removeData = removeNode->data;
 
+    if (removeNode == this->tail) {
+        this->tail = prevNode;
+    }
+
+    prevNode->next = removeNode->next;
+
+    delete removeNode;
+    this->count--;
+    return removeData;  
+}
+
+template <class T>
+bool BotkifyLinkedList<T>::removeItem(T item){
+    Node *prevNode = this->head;
+    Node *currNode = prevNode->next;
+
+    while (currNode != nullptr) {
+        if (currNode->data == item) {
+            prevNode->next = currNode->next;
+
+            if (currNode == this->tail) {
+                this->tail = prevNode;
+            }
+
+            delete currNode;
+            this->count--;
+            return true;
+        }
+    
+        prevNode = currNode;
+        currNode = currNode->next;
+    }
+
+    return false;
+}
+
+template <class T>
+bool BotkifyLinkedList<T>::empty() const{
+    return this->count == 0;
+}
+
+template <class T>
+void BotkifyLinkedList<T>::clear(){
+    Node *currNode = this->head;
+    while (currNode != nullptr) {
+        delete currNode;
+        currNode = currNode->next;
+    }
+
+    this->head->next = nullptr;
+    this->tail = this->head;
+    this->count = 0;
+}
+
+template <class T>
+int BotkifyLinkedList<T>::size() const{
+    return this->count;
 }
 
 template <class T>
 T& BotkifyLinkedList<T>::get(int index) const{
-    this->chekcIndex(index);
-    Node *currNode = this->head;
-
-    for (int i = 0; i < index; i++) {
-        currNode = currNode->next;
-    }
-
+    this->cN heckIndex(index);
+    Node *prevNode = this->getPreviousNodeOf(index);
+    Node *currNode = prevNode->next;
     return currNode->data;
 }
 
-/* ADDITIONAL FUNCTION */
+template <class T>
+string BotkifyLinkedList<T>::toString() const{
+    stringstream ss;
+    Node *currNode = this-head->next;
+
+    while (currNode != nullptr) {
+        ss << currNode->data;
+
+        if (currNode->next != nullptr) {
+            ss << ",";
+        }
+
+        currNode = currNode->next;
+    }
+
+
+    return ss.str();
+}
+
+/* HELPER FUNCTION */
 template <class T>
 void BotkifyLinkedList<T>::checkIndex(int index){
-    if (index < 0 || index >> this->count){
+    if (index < 0 || index > this->count){
         throw out_of_range("Index is invalid!");
     }
 }
 
 template <class T>
 typename BotkifyLinkedList<T>::Node *BotkifyLinkedList<T>::getPreviousNodeOf(int index){
-    Node *currNode = this->head;
+    Node *currNode = this->head; 
     for (int i = 0; i < index; i++){
         currNode = currNode->next;
     }
-
     return currNode;
 }
 

@@ -6,6 +6,7 @@
 #include <string>
 #include <stdexcept>
 #include <cmath>
+#include <stdexcept>
 #include "utils.h"
 
 using namespace std;
