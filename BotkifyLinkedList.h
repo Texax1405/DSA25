@@ -55,7 +55,7 @@ BotkifyLinkedList<T>::BotkifyLinkedList(){
 template <class T>
 BotkifyLinkedList<T>::~BotkifyLinkedList(){
     this->clear();
-    delete this->head
+    delete this->head;
 }
 
 template <class T>
@@ -152,7 +152,7 @@ int BotkifyLinkedList<T>::size() const{
 
 template <class T>
 T& BotkifyLinkedList<T>::get(int index) const{
-    this->cN heckIndex(index);
+    this->checkIndex(index);
     Node *prevNode = this->getPreviousNodeOf(index);
     Node *currNode = prevNode->next;
     return currNode->data;
