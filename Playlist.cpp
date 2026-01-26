@@ -13,30 +13,37 @@ Song::Song(int id,
            string url)
 {
     // TODO: Student implementation
+    this->id = id;
+    this-> title = title;
+    this->artist = artist;
+    this->album = album;
+    this->duration = duration;
+    this->score = score;
+    this->url = url;
 }
 
 int Song::getID() const
 {
     // TODO: Student implementation
-    return 0;
+    return this->id;
 }
 
 int Song::getDuration() const
 {
     // TODO: Student implementation
-    return 0;
+    return this->duration;
 }
 
 int Song::getScore() const
 {
     // TODO: Student implementation
-    return 0;
+    return this->score;
 }
 
 string Song::toString() const
 {
     // TODO: Student implementation
-    return "";
+    return this->title + "-" + this->artist;
 }
 
 // =======================
@@ -46,39 +53,44 @@ string Song::toString() const
 Playlist::Playlist(string name)
 {
     // TODO: Student implementation
+    this->name = name;
+    this->currentIndex = 0;
 }
 
 int Playlist::size() const
 {
     // TODO: Student implementation
-    return 0;
+    return this->lstSong.size();
 }
 
 bool Playlist::empty() const
 {
     // TODO: Student implementation
-    return true;
+    return this->lstSong.empty();
 }
 
 void Playlist::clear()
 {
     // TODO: Student implementation
+    this->lstSong.empty();
 }
 
 void Playlist::addSong(Song* s)
 {
     // TODO: Student implementation
+    this->lstSong.add(s);
 }
 
 void Playlist::removeSong(int index)
 {
     // TODO: Student implementation
+    this->lstSong.removeAt(index);
 }
 
 Song* Playlist::getSong(int index) const
 {
     // TODO: Student implementation
-    return nullptr;
+    return this->lstSong.get(index);
 }
 
 // =======================
@@ -88,6 +100,7 @@ Song* Playlist::getSong(int index) const
 Song* Playlist::playNext()
 {
     // TODO: Student implementation
+    
     return nullptr;
 }
 

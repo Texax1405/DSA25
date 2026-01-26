@@ -6,16 +6,21 @@
 template <class T>
 class BotkifyLinkedList
 {
+    // FRIEND CLASS
+    friend class Playlist;
+
 private:
     class Node
     {
     public:
         T data;
         Node* next;
-        Node* extra;
-
-        Node();
-        Node(const T& data, Node* next = nullptr, Node* extra = nullptr);
+        Node* extra;       
+        
+        Node(): 
+            next(nullptr), extra(nullptr) {}
+        Node(const T& data, Node* next = nullptr, Node* extra = nullptr) : 
+            data(data), next(next), extra(extra) {}
     };
 
     Node* head;
@@ -40,8 +45,9 @@ public:
     string toString() const;
 
     // HELPER FUNCTION
-    void checkIndex(int index);
-    Node *getPreviousNodeOf(int index);
+    void checkIndex(int index) const;
+    Node *getPreviousNodeOf(int index) const;
+
 };
 
 /* IMPLEMENTATION */
@@ -179,14 +185,14 @@ string BotkifyLinkedList<T>::toString() const{
 
 /* HELPER FUNCTION */
 template <class T>
-void BotkifyLinkedList<T>::checkIndex(int index){
+void BotkifyLinkedList<T>::checkIndex(int index) const{
     if (index < 0 || index > this->count){
         throw out_of_range("Index is invalid!");
     }
 }
 
 template <class T>
-typename BotkifyLinkedList<T>::Node *BotkifyLinkedList<T>::getPreviousNodeOf(int index){
+typename BotkifyLinkedList<T>::Node *BotkifyLinkedList<T>::getPreviousNodeOf(int index) const {
     Node *currNode = this->head; 
     for (int i = 0; i < index; i++){
         currNode = currNode->next;
