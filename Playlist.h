@@ -71,6 +71,9 @@ public:
 
     void playRandom(int index);
     int playApproximate(int step);
+
+    // HELPER FUNCTION
+    void checkIndex(int index);
 };
 
 #endif // PLAYLIST_H

@@ -140,7 +140,7 @@ bool BotkifyLinkedList<T>::empty() const{
 
 template <class T>
 void BotkifyLinkedList<T>::clear(){
-    Node *currNode = this->head;
+    Node *currNode = this->head->next;
     while (currNode != nullptr) {
         delete currNode;
         currNode = currNode->next;
