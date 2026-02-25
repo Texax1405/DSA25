@@ -74,6 +74,8 @@ public:
 
     // HELPER FUNCTION
     void checkIndex(int index);
+    string playRandomResult(int index); // for testing
+    int getSize() const {return this->size();} // for testing
 };
 
 #endif // PLAYLIST_H

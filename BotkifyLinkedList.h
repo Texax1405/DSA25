@@ -76,7 +76,10 @@ void BotkifyLinkedList<T>::add(T e){
 
 template <class T>
 void BotkifyLinkedList<T>::add(int index, T e){
-    this->checkIndex(index);
+    
+    if (index < 0 || index > this->count) {
+        throw out_of_range("Index is invalid!");
+    }
 
     if (index == this->count) {
         this->add(e);
@@ -168,7 +171,7 @@ T& BotkifyLinkedList<T>::get(int index) const{
 template <class T>
 string BotkifyLinkedList<T>::toString() const{
     stringstream ss;
-    Node *currNode = this-head->next;
+    Node *currNode = this->head->next;
 
     while (currNode != nullptr) {
         ss << currNode->data;
@@ -187,7 +190,7 @@ string BotkifyLinkedList<T>::toString() const{
 /* HELPER FUNCTION */
 template <class T>
 void BotkifyLinkedList<T>::checkIndex(int index) const{
-    if (index < 0 || index > this->count){
+    if (index < 0 || index >= this->count){
         throw out_of_range("Index is invalid!");
     }
 }

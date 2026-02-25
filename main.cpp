@@ -1,116 +1,150 @@
-#include "Playlist.h"
-#include <assert.h>
-#include "BotkifyLinkedList.h"
+#include "testcase/tc_PlayList.h"
+//#include "testcase/tc_BotkifyLinkedList.h"
 
-using namespace std;
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define RESET   "\033[0m"
 
-void printTestHeader(string title) {
-    cout << "========================================" << endl;
-    cout << "RUNNING TEST: " << title << endl;
-    cout << "========================================" << endl;
-}
-
-void testSongClass() {
-    printTestHeader("Song Class Methods");
-    Song s(101, "See Tinh", "Hoang Thuy Linh", "Link", 185, 900, "url_see_tinh");
-    
-    assert(s.getID() == 101);
-    assert(s.getDuration() == 185);
-    assert(s.getScore() == 900);
-    assert(s.toString() == "See Tinh-Hoang Thuy Linh");
-    
-    cout << "Song info: " << s.toString() << " -> PASSED" << endl;
-}
-
-void testPlaylistBasic() {
-    printTestHeader("Playlist Basic Management");
-    Playlist p("V-Pop 2026");
-    
-    assert(p.empty() == true);
-    assert(p.size() == 0);
-    
-    p.addSong(new Song(1, "Song A", "Artist A", "Album A", 100, 50, "u1"));
-    p.addSong(new Song(2, "Song B", "Artist B", "Album B", 200, 80, "u2"));
-    
-    assert(p.size() == 2);
-    assert(p.getSong(1)->getID() == 2);
-    p.removeSong(0);
-    
-    assert(p.size() == 1);
-    assert(p.getSong(0)->getID() == 2);
-    p.clear();
-    assert(p.empty() == true);
-    cout << "Basic management -> PASSED" << endl;
-}
-
-void testPlayingControl() {
-    printTestHeader("Playing Control (Circular)");
-    Playlist p("Test Play");
-    p.addSong(new Song(1, "S1", "A1", "AL1", 100, 10, "u1"));
-    p.addSong(new Song(2, "S2", "A2", "AL2", 120, 20, "u2"));
-    p.addSong(new Song(3, "S3", "A3", "AL3", 140, 30, "u3"));
-
-    // Mặc định ban đầu currentIndex = -1, playNext sẽ về 0
-    assert(p.playNext()->getID() == 1); 
-    assert(p.playNext()->getID() == 2);
-    assert(p.playNext()->getID() == 3);
-    assert(p.playNext()->getID() == 1); // Quay vòng về đầu (Circular) [cite: 187]
-
-    assert(p.playPrevious()->getID() == 3); // Quay vòng về cuối [cite: 193]
-    assert(p.playPrevious()->getID() == 2);
-    
-    cout << "Circular Playing Control -> PASSED" << endl;
-}
-
-void testGetTotalScore() {
-    printTestHeader("Total Score Calculation (Example 3.3)");
-    Playlist p("ScoreTest");
-    // Dữ liệu theo ví dụ 3.3 trong đề bài: 4, 1, 3, 5 [cite: 208]
-    p.addSong(new Song(1, "S1", "A1", "AL1", 100, 4, "u1"));
-    p.addSong(new Song(2, "S2", "A2", "AL2", 100, 1, "u2"));
-    p.addSong(new Song(3, "S3", "A3", "AL3", 100, 3, "u3"));
-    p.addSong(new Song(4, "S4", "A4", "AL4", 100, 5, "u4"));
-
-    int result = p.getTotalScore();
-    cout << "Calculated Total Score: " << result << " (Expected: 114)" << endl;
-    assert(result == 114); // [cite: 213]
-    cout << "getTotalScore Algorithm -> PASSED" << endl;
-}
-
-void testAdvancedModes() {
-    printTestHeader("Advanced Playing Modes");
-    Playlist p("Advanced");
-    // Dữ liệu ví dụ 3.5: 50, 60, 30, 90, 100 [cite: 255]
-    p.addSong(new Song(1, "S1", "A1", "AL1", 50, 10, "u1"));
-    p.addSong(new Song(2, "S2", "A2", "AL2", 60, 10, "u2"));
-    p.addSong(new Song(3, "S3", "A3", "AL3", 30, 10, "u3"));
-    p.addSong(new Song(4, "S4", "A4", "AL4", 90, 10, "u4"));
-    p.addSong(new Song(5, "S5", "A5", "AL5", 100, 10, "u5"));
-
-    cout << "Testing playRandom(0): ";
-    p.playRandom(0); // Kết quả in ra kỳ vọng: S1-A1,S2-A2,S4-A4,S5-A5 [cite: 257]
-
-    int diff = p.playApproximate(1); // step = 1 [cite: 256]
-    cout << "Testing playApproximate(1): " << diff << " (Expected: 50)" << endl;
-    assert(diff == 50); // [cite: 258]
-    
-    cout << "Advanced Modes -> PASSED" << endl;
-}
 
 int main() {
-    try {
-        testSongClass();
-        testPlaylistBasic();
-        testPlayingControl();
-        testGetTotalScore();
-        testAdvancedModes();
-        
-        cout << "\n========================================" << endl;
-        cout << "CONGRATS: ALL TESTS PASSED SUCCESSFULLY!" << endl;
-        cout << "========================================" << endl;
-    } catch (const exception& e) {
-        cerr << "FATAL ERROR: " << e.what() << endl;
-        return 1;
-    }
+    // Student can use this main function to do some basic testing
+
+    //===================TEST LINKEDLIST==========================
+    // cout << LinkedList01();
+    // cout << LinkedList02();
+    // cout << LinkedList03();
+    // cout << LinkedList04();
+    // cout << LinkedList05();
+    // cout << LinkedList06();
+    // cout << LinkedList07();
+    // cout << LinkedList08();
+    // cout << LinkedList09();
+    // cout << LinkedList10();
+    // cout << LinkedList11();
+    // cout << LinkedList12();
+    // cout << LinkedList13();
+    // cout << LinkedList14();
+    // cout << LinkedList15();
+    // cout << LinkedList16();
+    // cout << LinkedList17();
+    // cout << LinkedList18();
+    // cout << LinkedList19();
+    // cout << LinkedList20();
+    // cout << LinkedList21();
+    // cout << LinkedList22();
+    // cout << LinkedList23();
+    // cout << LinkedList24();
+    //======================TEST SONG & PLAYLIST==================================
+    // cout << PlayList01();
+    // cout << PlayList02();
+    // cout << PlayList03();
+    // cout << PlayList04();
+    // cout << PlayList05();
+    // cout << PlayList06();
+    // cout << PlayList07();
+    // cout << PlayList08();
+    // cout << PlayList09();
+    // cout << PlayList10();
+    // cout << PlayList11();
+    // cout << PlayList12();
+    // cout << PlayList13();
+    // cout << PlayList14();
+    // cout << PlayList15();
+    // cout << PlayList16();
+    // cout << PlayList17();
+    // cout << PlayList18();
+    // cout << PlayList19();
+    // cout << PlayList20();
+    // cout << PlayList21();
+    // cout << PlayList22();
+
+    //test getTotalScore()
+    // cout << PlayList23();
+    // cout << PlayList24();
+    // cout << PlayList25();
+    // cout << PlayList26();
+    // cout << PlayList27();
+    // cout << PlayList28();
+    // cout << PlayList29();
+    // cout << PlayList30();
+    // cout << PlayList31();
+    // cout << PlayList32();
+    // cout << PlayList33();
+    // cout << PlayList34();
+    // cout << PlayList35();
+    // cout << PlayList36();
+    // cout << PlayList37();
+    // cout << PlayList38();
+    // cout << PlayList39();
+    // cout << PlayList40();
+    // cout << PlayList41();
+    // cout << PlayList42();
+
+    // test comparedTo()
+    cout << PlayList43();
+    cout << PlayList44();
+    cout << PlayList45();
+    cout << PlayList46();
+    cout << PlayList47();
+    cout << PlayList48();
+    cout << PlayList49();
+    cout << PlayList50();
+    cout << PlayList51();
+    cout << PlayList52();
+    cout << PlayList53();
+    cout << PlayList54();
+    cout << PlayList55();
+    cout << PlayList56();
+    cout << PlayList57();
+    cout << PlayList58();
+    cout << PlayList59();
+    cout << PlayList60();
+    cout << PlayList61();
+    cout << PlayList62();
+
+    //test playRandom()
+    // cout << PlayList63();
+    // cout << PlayList64();
+    // cout << PlayList65();
+    // cout << PlayList66();
+    // cout << PlayList67();
+    // cout << PlayList68();
+    // cout << PlayList69();
+    // cout << PlayList70();
+    // cout << PlayList71();
+    // cout << PlayList72();
+    // cout << PlayList73();
+    // cout << PlayList74();
+    // cout << PlayList75();
+    // cout << PlayList76();
+    // cout << PlayList77();
+    // cout << PlayList78();
+    // cout << PlayList79();
+    // cout << PlayList80();
+
+
+    //test playApproximate()
+    // cout << PlayList81();
+    // cout << PlayList82();
+    // cout << PlayList83();
+    // cout << PlayList84();
+    // cout << PlayList85();
+    // cout << PlayList86();
+    // cout << PlayList87();
+    // cout << PlayList88();
+    // cout << PlayList89();
+    // cout << PlayList90();
+    // cout << PlayList91();
+    // cout << PlayList92();
+    // cout << PlayList93();
+    // cout << PlayList94();
+    // cout << PlayList95();
+    // cout << PlayList96();
+    // cout << PlayList97();
+    // cout << PlayList98();
+    // cout << PlayList99();
+    // cout << PlayList100();
+
+    
     return 0;
 }
