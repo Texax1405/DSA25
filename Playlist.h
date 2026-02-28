@@ -52,6 +52,9 @@ private:
     BotkifyLinkedList<Song*> lstSong;
     int currentIndex;
 
+    Song** songCache;
+    void updateCache();
+
 public:
     Playlist(string name);
 
@@ -73,7 +76,6 @@ public:
     int playApproximate(int step);
 
     // HELPER FUNCTION
-    void checkIndex(int index);
     string playRandomResult(int index); // for testing
     int getSize() const {return this->size();} // for testing
 };

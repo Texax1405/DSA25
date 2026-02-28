@@ -55,6 +55,7 @@ Playlist::Playlist(string name)
     // TODO: Student implementation
     this->name = name;
     this->currentIndex = 0;
+    this->songCache = nullptr;
 }
 
 int Playlist::size() const
@@ -80,17 +81,30 @@ void Playlist::addSong(Song* s)
 {
     // TODO: Student implementation
     this->lstSong.add(s);
+    this->updateCache();
 }
 
 void Playlist::removeSong(int index)
 {
     // TODO: Student implementation
-    this->checkIndex(index);
-    this->lstSong.removeAt(index);
-    if (this->empty()) this->currentIndex = -1;
-    else if (index <= this->currentIndex) {
-        this->currentIndex--;
-        if (this->currentIndex < 0) this->currentIndex = 0;
+    if (index < 0 || index >= this->size()) {
+        throw out_of_range("Index is invalid!");
+    }
+    for (int i = 0; i < this->lstSong.size(); i++) {
+        if (this->getSong(index)->getID() == index) {
+            this->lstSong.removeAt(i);
+        }
+
+        if (index < this->currentIndex) {
+            this->currentIndex--;
+        }
+
+        if (this->currentIndex >= this->lstSong.size() && !lstSong.empty()) {
+            this->currentIndex = 0;
+        }
+    
+        this->updateCache();
+        return;
     }
 }
 
@@ -112,20 +126,16 @@ Song* Playlist::playNext()
 {
     // TODO: Student implementation
     if (this->empty()) throw out_of_range("Index is invalid!");
-    this->currentIndex = (this->currentIndex + 1) % this->size();
-    return this->getSong(this->currentIndex);
+    this->currentIndex = (this->currentIndex + 1) % this->lstSong.size();
+    return this->songCache[this->currentIndex];
 }
 
 Song* Playlist::playPrevious()
 {
     // TODO: Student implementation
     if (this->empty()) throw out_of_range("Index is invalid!");
-    if (this->currentIndex <= 0) {
-        this->currentIndex = this->size() - 1;
-    } else {
-        this->currentIndex--;
-    }
-    return this->getSong(this->currentIndex);
+    this->currentIndex = (this->currentIndex - 1 + this->lstSong.size()) % this->lstSong.size(); 
+    return this->songCache[this->currentIndex];
 }
 
 // =======================
@@ -190,52 +200,142 @@ int Playlist::getTotalScore() {
 bool Playlist::compareTo(Playlist p, int numSong)
 {
     // TODO: Student implementation
-    auto getAvgMax = [](Playlist& pl, int k) -> double {
-        int n = pl.size();
-        if (n < k || k <= 0) return 0.0;
+    double Avg1 = 0.0;
+    double Avg2 = 0.0;
+    int n1 = this->getSize();
+    int n2 = p.getSize();
 
-        // Trích xuất scores ra mảng để truy cập O(1)
-        int* scores = new int[n];
-        BotkifyLinkedList<Song*>::Node* curr = pl.lstSong.head->next;
-        for (int i = 0; i < n && curr; i++) {
-            scores[i] = curr->data->getScore();
-            curr = curr->next;
+    if (n1 == 0 && n2 == 0) return true;
+    if (n1 == 0) return false;
+    if (n2 == 0) return true;
+
+    int* list1 = new int [n1];
+    int* list2 = new int [n2];
+    
+    int idx = 0;
+    BotkifyLinkedList<Song*>::Node* curr1 = this->lstSong.head->next; // Giả sử head là dummy node
+    while (curr1 != nullptr && idx < n1) {
+        list1[idx++] = curr1->data->getScore();
+        curr1 = curr1->next;
+    }
+
+    idx = 0;
+    BotkifyLinkedList<Song*>::Node* curr2 = p.lstSong.head->next;
+    while (curr2 != nullptr && idx < n2) {
+        list2[idx++] = curr2->data->getScore();
+        curr2 = curr2->next;
+    }
+    
+    if (numSong >= n1) {
+        int maxScore = -1e6;
+        for (int i = 0; i < n1; ++i) maxScore = ((list1[i] > maxScore) ? list1[i] : maxScore);
+        Avg1 += maxScore; 
+    }
+
+    if (numSong >= n2) {
+        int maxScore = -1e6;
+        for (int i = 0; i < n2; ++i) maxScore = ((list2[i] > maxScore) ? list2[i] : maxScore);
+        Avg2 += maxScore;
+    }
+
+    if (numSong < n1) {
+        int* left = new int[n1];
+        int* right = new int [n1];
+
+        for (int i = 0; i < n1; i++) {
+            if (i % numSong == 0) left[i] = list1[i];
+            else left[i] = (left[i-1] > list1[i]) ? left[i-1] : list1[i];
         }
 
-        int* dq = new int[n]; 
-        int head = 0, tail = -1;
-        double sumMax = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (head <= tail && dq[head] <= i - k) head++;
-            while (head <= tail && scores[dq[tail]] <= scores[i]) tail--;
-            dq[++tail] = i;
-            if (i >= k - 1) sumMax += scores[dq[head]];
+        for (int i = n1 - 1; i >= 0; i--) {
+            if (i == n1-1 || (i + 1) % numSong == 0) right[i] = list1[i];
+            else right[i] = (right[i+1] > list1[i]) ? right[i+1] : list1[i];
         }
 
-        delete[] scores; delete[] dq;
-        return sumMax / (n - k + 1);
-    };
-    return getAvgMax(*this, numSong) >= getAvgMax(p, numSong);
+        int sum = 0;
+        for (int i = 0; i + numSong - 1 < n1; i++) {
+            sum += (right[i] > left[i+numSong-1]) ? right[i] : left[i+numSong-1];
+        }
+        Avg1 = sum / (n1 - numSong + 1);
+        delete[] left;
+        delete[] right;
+    }
+
+    if (numSong < n2) {
+        int* left = new int[n2];
+        int* right = new int [n2];
+
+        for (int i = 0; i < n2; i++) {
+            if (i % numSong == 0) left[i] = list2[i];
+            else left[i] = (left[i-1] > list2[i]) ? left[i-1] : list2[i];
+        }
+
+        for (int i = n2 - 1; i >= 0; i--) {
+            if (i == n2-1 || (i + 1) % numSong == 0) right[i] = list2[i];
+            else right[i] = (right[i+1] > list2[i]) ? right[i+1] : list2[i];
+        }
+
+        int sum = 0;
+        for (int i = 0; i + numSong - 1 < n2; i++) {
+            sum += (right[i] > left[i+numSong-1]) ? right[i] : left[i+numSong-1];
+        }
+        Avg2 = sum / (n2 - numSong + 1);
+        delete[] left;
+        delete[] right;
+    }
+
+    delete[] list1;
+    delete[] list2;
+    
+    return Avg1 >= Avg2;
 }
-
 // =======================
 // Advanced playing modes
 // =======================
 
 string Playlist::playRandomResult(int index)
 {
+    int n = this->size();
     if (index < 0 || index >= this->size()) return "";
     stringstream ss;
+    bool* visited = new bool[n];
+
+    for (int i = 0; i < n; i++) visited[i] = false;
+
     Song* curr = this->getSong(index);
     ss << curr->toString();
-    for (int i = index + 1; i < this->size(); i++) {
-        Song* nextS = this->getSong(i);
-        if (nextS->getDuration() < curr->getDuration()) {
-            ss << "," << nextS->toString();
-            curr = nextS;
+    visited[index] = true;
+
+    while (true) {
+        int bestIdx = -1;
+        int minDis = n + 1;
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                Song* temp = this->getSong(i);
+
+                if (temp->getDuration() > curr->getDuration()) {
+                    int distance = abs(i - index);
+                    if (distance < minDis) {
+                        minDis = distance;
+                        bestIdx = i;
+                    } else if (distance == minDis) {
+                        if (bestIdx == -1 || i < bestIdx) bestIdx = i;
+                    }
+                }
+            }
+        }
+
+        if (bestIdx != -1) {
+            curr = this->getSong(bestIdx);
+            ss << "," << curr->toString();
+            visited[bestIdx] = true;
+        } else {
+            break;
         }
     }
+
+    delete[] visited;
     return ss.str();
 }
 
@@ -246,28 +346,65 @@ void Playlist::playRandom(int index)
 
 int Playlist::playApproximate(int step)
 {
-    // TODO: Student implementation
     int n = this->size();
-    if (n < 2) return 0;
-    int* dp = new int[n];
-    for (int i = 0; i < n; i++) dp[i] = 1e9;
-    dp[0] = 0; 
+    if (n <= 1) return 0;
+
+    int* durations = new int[n];
     for (int i = 0; i < n; i++) {
-        for (int s = 1; s <= step + 1 && i + s < n; s++) {
-            int diff = abs(this->getSong(i)->getDuration() - this->getSong(i+s)->getDuration());
-            dp[i+s] = min(dp[i+s], dp[i] + diff); 
+        durations[i] = this->getSong(i)->getDuration();
+    }
+
+    const long long INF = 1e15;
+
+    long long** dp = new long long*[n];
+    for (int i = 0; i < n; i++) {
+        dp[i] = new long long[step + 1];
+        for (int s = 0; s <= step; s++) dp[i][s] = INF;
+    }
+
+    for (int s = 0; s <= step; s++) dp[0][s] = 0;
+
+    for (int i = 1; i < n; i++) {
+        for (int s = 0; s <= step; s++) {
+            for (int j = 0; j < i; j++) {
+                int skipped = i - j - 1; 
+                if (s >= skipped && dp[j][s - skipped] != INF) {
+                    long long diff = abs(durations[i] - durations[j]);
+                    if (dp[j][s - skipped] + diff < dp[i][s]) {
+                        dp[i][s] = dp[j][s - skipped] + diff;
+                    }
+                }
+            }
         }
     }
-    int res = dp[n-1];
+
+    long long minTotalDiff = INF;
+    for (int s = 0; s <= step; s++) {
+        if (dp[n - 1][s] < minTotalDiff) {
+            minTotalDiff = dp[n - 1][s];
+        }
+    }
+
+    for (int i = 0; i < n; i++) delete[] dp[i];
     delete[] dp;
-    return res;
+    delete[] durations;
+
+    return (minTotalDiff == INF) ? 0 : (int)minTotalDiff;
 }
 
-// HELPER FUNCTION 
+// HELPER FUNCTION
 
-void Playlist::checkIndex(int index) 
-{
-    if (index < 0 || index >= this->size() || this->empty()) {
-        throw out_of_range("Index is invalid!");
+void Playlist::updateCache() {
+    if (this->songCache != nullptr) {
+        delete[] this->songCache;
+        this->songCache = nullptr;
+    } 
+
+    int n = this->lstSong.size();
+    if (n == 0) return;
+
+    this->songCache = new Song*[n];
+    for (int i = 0; i < n; i++) {
+        this->songCache[i] = this->lstSong.get(i);
     }
 }

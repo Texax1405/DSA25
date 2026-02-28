@@ -29,6 +29,8 @@ private:
 
 public:
     BotkifyLinkedList();
+    BotkifyLinkedList(const BotkifyLinkedList& other);
+
     ~BotkifyLinkedList();
 
     void add(T e);
@@ -56,6 +58,19 @@ BotkifyLinkedList<T>::BotkifyLinkedList(){
     this->head = new Node();
     this->tail = this->head;
     this->count = 0;
+}
+
+template <class T>
+BotkifyLinkedList<T>::BotkifyLinkedList(const BotkifyLinkedList& other) {
+    this->head = new Node();
+    this->tail = this->head;
+    this->count = 0;
+
+    Node* temp = other.head->next;
+    while (temp != nullptr) {
+        this->add(temp->data);
+        temp = temp->next;
+    }
 }
 
 template <class T>
@@ -145,9 +160,10 @@ template <class T>
 void BotkifyLinkedList<T>::clear(){
     Node *currNode = this->head->next;
     while (currNode != nullptr) {
-        Node *nextNode = currNode->next;
-        delete currNode;
-        currNode = nextNode;
+        Node *temp = currNode;
+        currNode = currNode->next;
+        delete temp;
+        
     }
 
     this->head->next = nullptr;

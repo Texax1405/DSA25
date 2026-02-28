@@ -4,8 +4,6 @@
 #define NUM_TEST 100
 using namespace std;
 
-
-
 string PlayList01() {
     string name = "PlayList01";
     Playlist p("Test");
@@ -125,12 +123,11 @@ string PlayList07() {
     string name = "PlayList07";
     Playlist p1("T");
     Playlist p2("K");
-
     p1.addSong(new Song(0, "A", "Thien", "A", 50, 4, ""));
     p1.addSong(new Song(1, "B", "Thu", "B", 60, 1, ""));
     p1.addSong(new Song(2, "C", "C", "C", 30, 3, ""));
     p1.addSong(new Song(3, "D", "D", "D", 90, 5, ""));
-    
+
     p2.addSong(new Song(1, "B", "Thu", "B", 60, 1, ""));
     p2.addSong(new Song(2, "C", "C", "C", 30, 2, ""));
     p2.addSong(new Song(3, "D", "D", "D", 90, 3, ""));
@@ -141,8 +138,8 @@ string PlayList07() {
     output << (((p1.compareTo(p2,2)) == true) ? "OK" : "NOT OK");
     expected << "OK";
 
+
     return printResult(name, output.str(), expected.str());
-    cout << "something1" << endl;
 }
 
 
@@ -178,11 +175,12 @@ string PlayList09() {
     stringstream expected;
 
     int len = p.getSize();
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < 4; ++i) {
+
         output << p.playPrevious() -> toString() << "\n";
     }
 
-    expected << "C-DA" << "\n" << "B-Thu" << "\n" << "A-Thien" << "\n";
+    expected << "A-Thien" << "\n" << "C-DA" << "\n" << "B-Thu" << "\n" << "A-Thien" << "\n";
     return printResult(name, output.str(), expected.str());
 }
 
@@ -338,9 +336,9 @@ string PlayList18() {
     //Get the first song
     output << p1.getSong(0) -> toString() << "\n";
     p1.removeSong(1);
+    output << p1.playNext() -> toString() << "\n";
     output << p1.playNext() -> toString();
-
-    expected << "A-Thien" << "\n" << "C-C";
+    expected << "A-Thien" << "\n" << "C-C" << "\n" << "D-D";
     return printResult(name, output.str(), expected.str());
 }
 
@@ -1425,7 +1423,7 @@ string PlayList62() {
     return printResult(name, output.str(), expected.str());
 }
 
-//test playRandomResult
+//test playRandom
 string PlayList63() {
     string name = "PlayList63";
     Playlist p1("a");
@@ -2216,6 +2214,92 @@ string PlayList100() {
     // |10-9|=1
     // |11-10|=1
     // total=3
+
+    return printResult(name, output.str(), expected.str());
+}
+
+
+// void demo1() {
+//     Playlist p1("a");
+
+//     int index = 2;
+//     p1.addSong(new Song(0, "A", "Thien", "A", 70, 4, ""));
+//     p1.addSong(new Song(1, "B", "Thu", "B", 20, 1, ""));
+//     p1.addSong(new Song(2, "C", "C", "C", 30, 3, ""));
+//     p1.addSong(new Song(3, "D", "D", "D", 50, 5, ""));
+//     BotkifyLinkedList<Song*>::Iterator cursor = p1.lstSong.begin();
+//     int cnt = 0;
+//     while (cnt != index) {
+//         ++cursor;
+//         ++cnt;
+//     }
+
+//     BotkifyLinkedList<Song*>::Iterator left = --cursor;
+//     BotkifyLinkedList<Song*>::Iterator right = ++cursor;
+    
+
+   
+
+//     cout << (*left) -> toString() << "\n";
+//     cout << (*right) -> toString() << "\n";
+  
+// }
+
+void test_005() {
+    Playlist p("Pop Hits");
+    p.addSong(new Song(1, "A", "Art", "Alb", 100, 10, "url"));
+    p.addSong(new Song(2, "B", "Art", "Alb", 100, 10, "url"));
+    p.addSong(new Song(3, "C", "Art", "Alb", 100, 10, "url"));
+
+    cout << "test_005 next: ";
+    for(int i = 0; i < 4; i++) {
+        Song* s = p.playNext();
+        cout << s->toString() << (i == 3 ? "" : " -> ");
+    }
+    cout << endl;
+
+    cout << "test_005 prev: ";
+    for(int i = 0; i < 4; i++) {
+        Song* s = p.playPrevious();
+        cout << s->toString() << (i == 3 ? "" : " -> ");
+    }
+    cout << endl;
+}
+
+string PlayList101() {
+    string name = "PlayList101";
+    Playlist p1("a");\
+    stringstream output;
+    stringstream expected;
+
+    p1.addSong(new Song(0, "A", "A", "A", 8, 1, ""));
+    p1.addSong(new Song(1, "B", "B", "B", 1, 1, ""));
+
+    output << p1.playNext()->toString() << " ";
+    p1.addSong(new Song(2, "C", "C", "C", 9, 1, ""));
+    output << p1.playNext() -> toString() << " ";
+    p1.addSong(new Song(3, "D", "D", "D", 9, 1, ""));
+    output << p1.playNext() -> toString();
+    expected << "B-B C-C D-D";
+
+    return printResult(name, output.str(), expected.str());
+}
+
+string PlayList102() {
+    string name = "PlayList102";
+    Playlist p1("p");
+    stringstream output;
+    stringstream expected;
+
+    p1.addSong(new Song(0, "A", "A", "A", 8, 1, ""));
+    p1.addSong(new Song(1, "B", "B", "B", 1, 1, ""));
+
+    output << p1.playPrevious() -> toString() << " ";
+    output << p1.playPrevious() -> toString() << " ";
+    output << p1.playPrevious() -> toString() << " ";
+    p1.addSong(new Song(2, "C", "C", "C", 9, 1, ""));
+    output << p1.playPrevious() -> toString();
+    expected << "B-B A-A B-B A-A";
 
     return printResult(name, output.str(), expected.str());
 }

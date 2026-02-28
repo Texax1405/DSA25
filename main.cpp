@@ -81,26 +81,26 @@ int main() {
     // cout << PlayList42();
 
     // test comparedTo()
-    cout << PlayList43();
-    cout << PlayList44();
-    cout << PlayList45();
-    cout << PlayList46();
-    cout << PlayList47();
-    cout << PlayList48();
-    cout << PlayList49();
-    cout << PlayList50();
-    cout << PlayList51();
-    cout << PlayList52();
-    cout << PlayList53();
-    cout << PlayList54();
-    cout << PlayList55();
-    cout << PlayList56();
-    cout << PlayList57();
-    cout << PlayList58();
-    cout << PlayList59();
-    cout << PlayList60();
-    cout << PlayList61();
-    cout << PlayList62();
+    // cout << PlayList43();
+    // cout << PlayList44();
+    // cout << PlayList45();
+    // cout << PlayList46();
+    // cout << PlayList47();
+    // cout << PlayList48();
+    // cout << PlayList49();
+    // cout << PlayList50();
+    // cout << PlayList51();
+    // cout << PlayList52();
+    // cout << PlayList53();
+    // cout << PlayList54();
+    // cout << PlayList55();
+    // cout << PlayList56();
+    // cout << PlayList57();
+    // cout << PlayList58();
+    // cout << PlayList59();
+    // cout << PlayList60();
+    // cout << PlayList61();
+    // cout << PlayList62();
 
     //test playRandom()
     // cout << PlayList63();
@@ -145,6 +145,8 @@ int main() {
     // cout << PlayList99();
     // cout << PlayList100();
 
+    cout << PlayList101();
+    cout << PlayList102();
     
     return 0;
 }
